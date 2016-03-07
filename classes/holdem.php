@@ -28,7 +28,6 @@ class holdem_game {
 			$val = $player->get_high_hand($this->community_cards);
 			$player_scores[$player->getName()] = $val;
 		}
-		print_r($player_scores);
 		arsort($player_scores);
 		$i = 0 ;
 		foreach($player_scores as $key => $val)
