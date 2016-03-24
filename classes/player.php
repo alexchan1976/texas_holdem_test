@@ -92,32 +92,24 @@ class player
 		}
 		
 	}
+	public function check_has_pairs($community)
+	{
+		$matches = $this->check_match($community);
+		foreach ($matches as $key => $cards) {
+			if(count($cards) == 2)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	public function check_full_house($community)
 	{
 		$matches = $this->check_match($community);
-		//print_r($matches);
-		if(count($matches) == 0)
+		if($this->check_has_pairs == true && $this->check_three_of_kind() == true)
 		{
-			return false;
-		}
-		$has_pair = 0;
-		$has_3 =0;
-		foreach($matches as $key => $value)
-		{
-			if(count($value) == 1)
-			{
-				$has_pair =1;
-			}
-			if(count($value) == 2)
-			{
-				$has_3 = 1;
-			}
-		}
-
-		if($has_pair == 1 && $has_3 ==1){
 			return true;
 		}
-		return false;
 	}
 	public function check_three_of_kind($community)
 	{
@@ -136,7 +128,7 @@ class player
 		$matches = $this->check_match($community);
 		foreach($matches as $key => $value)
 		{
-			if(count($value) == 3)
+			if(count($value) == 4)
 			{
 				return true;
 			}
