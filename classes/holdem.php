@@ -13,7 +13,7 @@ class holdem_game {
 	}
 	private function init_community_cards()
 	{
-		$this->community_cards = $this->deck->dealMultiCards(5);
+		$this->community_cards = $this->deck->deal_multi_cards(5);
 	}
 
 	public function get_community_cards()
@@ -26,7 +26,7 @@ class holdem_game {
 		foreach($this->players as $player)
 		{
 			$val = $player->get_high_hand($this->community_cards);
-			$player_scores[$player->getName()] = $val;
+			$player_scores[$player->get_name()] = $val;
 		}
 		arsort($player_scores);
 		$i = 0 ;
@@ -38,25 +38,25 @@ class holdem_game {
 			}
 		}
 	}
-	public function getPlayerHand($name)
+	public function get_player_hand($name)
 	{
 		foreach($this->players as $player)
 		{
 			//echo "\ndebug" .$player->getName()."\n";
-			if($player->getName() == $name)
+			if($player->get_name() == $name)
 			{
-				echo $player->displayCards();
+				echo $player->display_cards();
 				echo $this->display_community();
 			}
 		}
 	}
-	public function getAllHands()
+	public function get_all_hands()
 	{
 		foreach($this->players as $player)
 		{
-			echo "\nplayer name" .$player->getName()."\n";
+			echo "\nplayer name" .$player->get_name()."\n";
 
-				echo $player->displayCards();
+				echo $player->display_cards();
 				echo $this->display_community();
 				echo "\n-------\n";
 		}

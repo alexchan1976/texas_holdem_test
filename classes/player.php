@@ -9,23 +9,23 @@ class player
 		$this->hand = array();
 		$this->name = $name; 
 	}
-	public function getName()
+	public function get_name()
 	{
 		return $this->name;
 	}
 
-	public function addOneCardToHand(card $card)
+	public function add_one_card_to_hand(card $card)
 	{
 		$this->hand[] = $card;
 	}
-	public function addMultipleCards(array $cards)
+	public function add_multiple_cards(array $cards)
 	{
 		if(is_array($cards) == true)
 		{
 			$this->hand = $cards;	
 		}
 	}
-	public function getHand()
+	public function get_hand()
 	{
 		return $this->hand;
 	}
@@ -33,18 +33,18 @@ class player
 	{
 		for($i=1 ; $i < count($this->hand) ; $i++)
 		{
-			if(($this->hand[$i]->getSuite() != $this->hand[$i-1]->getSuite() ))
+			if(($this->hand[$i]->get_suite() != $this->hand[$i-1]->get_suite() ))
 			{
 				return false;
 			}
 		}
-		$suite_in_hand = $this->hand[$i-1]->getSuite();
+		$suite_in_hand = $this->hand[$i-1]->get_suite();
 		for($i=1; $i < count($community) ; $i++){
-			if($community[$i]->getSuite() != $suite_in_hand)
+			if($community[$i]->get_suite() != $suite_in_hand)
 			{
 				return false;
 			}
-			if(($community[$i]->getSuite() != $community[$i-1]->getSuite()))
+			if(($community[$i]->get_suite() != $community[$i-1]->get_suite()))
 			{
 				return false;
 			}
@@ -57,18 +57,18 @@ class player
 		$match_val = array();
 		for($i=1 ; $i < count($this->hand) ; $i++)
 		{
-			if($this->hand[$i]->getAbsValue() == $this->hand[$i-1]->getAbsValue() )
+			if($this->hand[$i]->get_abs_value() == $this->hand[$i-1]->get_abs_value() )
 			{
-				$match_val[$this->hand[$i]->getAbsValue()][] = array($this->hand[$i], $this->hand[$i-1]);
+				$match_val[$this->hand[$i]->get_abs_value()][] = array($this->hand[$i], $this->hand[$i-1]);
 			}
 		}
 		foreach($community as $card)
 		{
 			foreach($this->hand as $h_card)
 			{
-				if($card->getAbsValue() == $h_card->getAbsValue())
+				if($card->get_abs_value() == $h_card->get_abs_value())
 				{
-					$match_val[$card->getAbsValue()][] = array($card, $h_card);
+					$match_val[$card->get_abs_value()][] = array($card, $h_card);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ class player
 	}
 	public function check_straight($community)
 	{
-		$abs_array=$this->getAbsSort($community);
+		$abs_array=$this->get_abs_sort($community);
 		//low straight check
 		$ls_check = true;
 		$hs_check = true;
@@ -173,21 +173,21 @@ class player
 		}
 		return false;
 	}
-	private function getAbsSort($community)
+	private function get_abs_sort($community)
 	{
 		$abs_array = array();
 		foreach($this->hand as $card)
 		{
-			$abs_array[] = $card->getAbsValue();
-			if($card->getAbsValue()==14)
+			$abs_array[] = $card->get_abs_value();
+			if($card->get_abs_value()==14)
 			{
 				$abs_array[]=1; 
 			}
 		}
 		foreach($community as $card)
 		{
-			$abs_array[] = $card->getAbsValue();
-			if($card->getAbsValue()==14)
+			$abs_array[] = $card->get_abs_value();
+			if($card->get_abs_value()==14)
 			{
 				$abs_array[]=1; 
 			}	
@@ -206,7 +206,7 @@ class player
 	}
 	public function check_royal_flush($comm)
 	{
-		$abs_array = $this->getAbsSort($comm);
+		$abs_array = $this->get_abs_sort($comm);
 		if((end($abs_array) == 14) && $this->check_straight_flush($comm))
 		{
 			return true;
@@ -247,10 +247,10 @@ class player
 		{
 			return 93;
 		}
-		$abs_array=$this->getAbsSort($community);
+		$abs_array=$this->get_abs_sort($community);
 		return end($abs_array);
 	}
-	public function displayCards()
+	public function display_cards()
 	{
 		foreach($this->hand as $card)
 		{

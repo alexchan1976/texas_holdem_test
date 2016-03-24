@@ -6,7 +6,7 @@ require 'classes/holdem.php';
 
 $playing_deck = new deck();
 
-echo "welcome texas hold'em\n";
+echo "welcome Texas hold'em\n";
 $try = 0 ;
 do {
 	if($try > 0)
@@ -26,7 +26,7 @@ for($i = 0 ; $i < $number_of_players ; $i++)
 	$tmp = $i+1;
 	$name = "Player $tmp"; 
 	$player = new player($name);
-	$player->addMultipleCards($playing_deck->dealMultiCards(2));
+	$player->add_multiple_cards($playing_deck->deal_multi_cards(2));
 	$players[] = $player;
 }
 
@@ -37,6 +37,6 @@ $winner = $holdem->player_high_hand();
 
 echo $winner ." is winner!\n";
 echo "winning hand\n";
-$holdem->getPlayerHand($name);
+$holdem->get_player_hand($name);
 echo "\nall hands\n\n";
-$holdem->getAllHands();
+$holdem->get_all_hands();

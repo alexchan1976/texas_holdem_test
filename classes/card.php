@@ -11,16 +11,16 @@ class card {
 		$this->value = $value;
 	}
 
-	public function getSuite()
+	public function get_suite()
 	{
 		return $this->suite;
 	}
-	public function getValue()
+	public function get_value()
 	{
 		return $this->value;
 	}
 
-	public function getAbsValue()
+	public function get_abs_value()
 	{
 		if(is_numeric($this->value) == true)
 		{
@@ -46,6 +46,6 @@ class card {
 	}
 	public function __toString()
 	{
-		return $this->suite .' '.$this->value;
+		return $this->value .' of '.$this->suite;
 	}
 }

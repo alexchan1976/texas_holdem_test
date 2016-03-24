@@ -27,18 +27,18 @@ class deck
 		}
 	}
 
-	public function getCardDeck()
+	public function get_card_deck()
 	{
 		return $this->card_deck;
 	}
 
-	public function dealCard()
+	public function deal_card()
 	{
 		$cards = array_pop($this->card_deck);
 		return $cards;
 	}
 
-	public function dealMultiCards($num)
+	public function deal_multi_cards($num)
 	{
 		$dealt_cards = array();
 		if ($num <0 ){
@@ -48,7 +48,7 @@ class deck
 		{
 			for($i = 0; $i< $num; $i++)
 			{
-				$dealt_cards[] = $this->dealCard();
+				$dealt_cards[] = $this->deal_card();
 			}
 			return $dealt_cards;
 		}
