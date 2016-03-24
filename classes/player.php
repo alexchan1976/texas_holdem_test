@@ -51,75 +51,71 @@ class player
 		}
 		return true;
 	}
-
+	/**
+	 * @param array cards
+	 */
 	public function check_match($community)
 	{
-		$match_val = array();
-		for($i=1 ; $i < count($this->hand) ; $i++)
+		$temp_card_array = array();//sort cards in array
+		$combined_hand = array_merge($community , $this->hand);
+		$matched_cards = array();
+		foreach($combined_hand as $card)
 		{
-			if($this->hand[$i]->get_abs_value() == $this->hand[$i-1]->get_abs_value() )
+			$temp_card_array[$card->get_abs_value()][] = $card;
+		}
+		foreach ($temp_card_array as $key => $value) 
+		{
+			if(count($value) > 1)
 			{
-				$match_val[$this->hand[$i]->get_abs_value()][] = array($this->hand[$i], $this->hand[$i-1]);
+				$matched_cards[$key] = $value;
 			}
 		}
-		foreach($community as $card)
-		{
-			foreach($this->hand as $h_card)
-			{
-				if($card->get_abs_value() == $h_card->get_abs_value())
-				{
-					$match_val[$card->get_abs_value()][] = array($card, $h_card);
-				}
-			}
-		}
-		return $match_val;
+		return $matched_cards;
 	}
 	public function check_2pairs($comm)
 	{
 		$matches = $this->check_match($comm);
-		if(count($matches) == 0)
-		{
-			return false;
+		$number_of_pairs = 0;
+		foreach ($matches as $abs_value => $cards) {
+			if(count($cards) == 2)
+			{
+				$number_of_pairs +=1;
+			}
 		}
-		if(count($matches) > 1)
+		if($number_of_pairs == 2)
 		{
 			return true;
+		}
+		else
+		{
+			return false;	
+		}
+		
+	}
+	public function check_has_pairs($community)
+	{
+		$matches = $this->check_match($community);
+		foreach ($matches as $key => $cards) {
+			if(count($cards) == 2)
+			{
+				return true;
+			}
 		}
 		return false;
 	}
 	public function check_full_house($community)
 	{
 		$matches = $this->check_match($community);
-		//print_r($matches);
-		if(count($matches) == 0)
+		if($this->check_has_pairs == true && $this->check_three_of_kind() == true)
 		{
-			return false;
-		}
-		$has_pair = 0;
-		$has_3 =0;
-		foreach($matches as $key => $value)
-		{
-			if(count($value) == 1)
-			{
-				$has_pair =1;
-			}
-			if(count($value) == 2)
-			{
-				$has_3 = 1;
-			}
-		}
-
-		if($has_pair == 1 && $has_3 ==1){
 			return true;
 		}
-		return false;
 	}
-	public function check_3($community)
+	public function check_three_of_kind($community)
 	{
 		$matches = $this->check_match($community);
-		foreach($matches as $key => $value)
-		{
-			if(count($value) == 2)
+		foreach ($matches as $abs_value => $cards) {
+			if(count($cards) == 3)
 			{
 				return true;
 			}
@@ -132,7 +128,7 @@ class player
 		$matches = $this->check_match($community);
 		foreach($matches as $key => $value)
 		{
-			if(count($value) == 3)
+			if(count($value) == 4)
 			{
 				return true;
 			}
