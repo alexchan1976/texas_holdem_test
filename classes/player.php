@@ -75,15 +75,22 @@ class player
 	public function check_2pairs($comm)
 	{
 		$matches = $this->check_match($comm);
-		if(count($matches) == 0)
-		{
-			return false;
+		$number_of_pairs = 0;
+		foreach ($matches as $abs_value => $cards) {
+			if(count($cards) == 2)
+			{
+				$number_of_pairs +=1;
+			}
 		}
-		if(count($matches) > 1)
+		if($number_of_pairs == 2)
 		{
 			return true;
 		}
-		return false;
+		else
+		{
+			return false;	
+		}
+		
 	}
 	public function check_full_house($community)
 	{
@@ -112,12 +119,11 @@ class player
 		}
 		return false;
 	}
-	public function check_3($community)
+	public function check_three_of_kind($community)
 	{
 		$matches = $this->check_match($community);
-		foreach($matches as $key => $value)
-		{
-			if(count($value) == 2)
+		foreach ($matches as $abs_value => $cards) {
+			if(count($cards) == 3)
 			{
 				return true;
 			}
