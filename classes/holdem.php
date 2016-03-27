@@ -54,7 +54,7 @@ class holdem_game {
 	{
 		foreach($this->players as $player)
 		{
-			echo "\nplayer name" .$player->get_name()."\n";
+			echo "\nplayer name " .$player->get_name()."\n";
 
 				echo $player->display_cards();
 				echo $this->display_community();

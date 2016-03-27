@@ -106,7 +106,7 @@ class player
 	public function check_full_house(array $community)
 	{
 		$matches = $this->check_match($community);
-		if($this->check_has_pairs == true && $this->check_three_of_kind() == true)
+		if($this->check_has_pairs($community) == true && $this->check_three_of_kind($community) == true)
 		{
 			return true;
 		}
@@ -141,7 +141,6 @@ class player
 		//low straight check
 		$ls_check = true;
 		$hs_check = true;
-		print_r($abs_array);
 		for($i=1; $i < count($abs_array) ; $i++)
 		{
 			$diff = $abs_array[$i]-$abs_array[$i-1];
@@ -231,7 +230,7 @@ class player
 		{
 			return 96;
 		}
-		if($this->check_3($community) == true)
+		if($this->check_2pairs($community) == true)
 		{
 			return 95;
 		}
