@@ -3,6 +3,12 @@ class player
 {
 	private $hand = array();
 	private $name = '';
+	private $community = array();
+	private $combined_hand = array();
+	private $matches = array();
+	private $winning_hand = array();
+	private $score = 0 ;
+	private $win_string = '';
 
 	public function __construct($name)
 	{
@@ -14,6 +20,10 @@ class player
 		return $this->name;
 	}
 
+	public function set_community(array $community)
+	{
+		$this->community = $community;
+	}
 	public function add_one_card_to_hand(card $card)
 	{
 		$this->hand[] = $card;
@@ -29,37 +39,31 @@ class player
 	{
 		return $this->hand;
 	}
-	public function check_flush(array $community)
+	public function check_flush()
 	{
-		for($i=1 ; $i < count($this->hand) ; $i++)
-		{
-			if(($this->hand[$i]->get_suite() != $this->hand[$i-1]->get_suite() ))
+		$cards_in_suits = array();
+		foreach ($this->combined_hand as $card) {
+			$cards_in_suits[$card->get_suite()][] = $card;
+		}
+
+		foreach ($cards_in_suits as $suit => $cards) {
+			if(count($cards) == 5)
 			{
-				return false;
+				$this->win_string = 'Flush';
+				$this->winning_hand = $cards;
+				return true;
 			}
 		}
-		$suite_in_hand = $this->hand[$i-1]->get_suite();
-		for($i=1; $i < count($community) ; $i++){
-			if($community[$i]->get_suite() != $suite_in_hand)
-			{
-				return false;
-			}
-			if(($community[$i]->get_suite() != $community[$i-1]->get_suite()))
-			{
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 	/**
 	 * @param array cards
 	 */
-	public function check_match(array $community)
+	public function check_match()
 	{
 		$temp_card_array = array();//sort cards in array
-		$combined_hand = array_merge($community , $this->hand);
 		$matched_cards = array();
-		foreach($combined_hand as $card)
+		foreach($this->combined_hand as $card)
 		{
 			$temp_card_array[$card->get_abs_value()][] = $card;
 		}
@@ -70,51 +74,33 @@ class player
 				$matched_cards[$key] = $value;
 			}
 		}
-		return $matched_cards;
+		$this->matches = $matched_cards;
+		krsort($this->matches);
 	}
-	public function check_2pairs(array $community)
+	public function amount_of_pairs()
 	{
-		$matches = $this->check_match($community);
-		$number_of_pairs = 0;
-		foreach ($matches as $abs_value => $cards) {
+		$count_pairs = 0;
+		foreach ($this->matches as $abs_value => $cards)
+		{
 			if(count($cards) == 2)
 			{
-				$number_of_pairs +=1;
+				$count_pairs +=1;
 			}
 		}
-		if($number_of_pairs == 2)
-		{
-			return true;
-		}
-		else
-		{
-			return false;	
-		}
-		
+		return $count_pairs;
 	}
-	public function check_has_pairs(array $community)
+
+	public function check_full_house()
 	{
-		$matches = $this->check_match($community);
-		foreach ($matches as $key => $cards) {
-			if(count($cards) == 2)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	public function check_full_house(array $community)
-	{
-		$matches = $this->check_match($community);
-		if($this->check_has_pairs($community) == true && $this->check_three_of_kind($community) == true)
+		$matches = $this->check_match();
+		if($this->amount_of_pairs() >= 1 && $this->check_three_of_kind() == true)
 		{
 			return true;
 		}
 	}
-	public function check_three_of_kind(array $community)
+	public function check_three_of_kind()
 	{
-		$matches = $this->check_match($community);
-		foreach ($matches as $abs_value => $cards) {
+		foreach ($this->matches as $abs_value => $cards) {
 			if(count($cards) == 3)
 			{
 				return true;
@@ -123,10 +109,10 @@ class player
 		return false;
 	}
 	
-	public function check_four(array $community)
+	public function check_four()
 	{
-		$matches = $this->check_match($community);
-		foreach($matches as $key => $value)
+		
+		foreach($this->matches as $key => $value)
 		{
 			if(count($value) == 4)
 			{
@@ -135,119 +121,99 @@ class player
 		}
 		return false;
 	}
-	public function check_straight(array $community)
+	public function check_straight()
 	{
-		$abs_array=$this->get_abs_sort($community);
-		//low straight check
-		$ls_check = true;
-		$hs_check = true;
-		for($i=1; $i < count($abs_array) ; $i++)
+		$abs_array=$this->get_abs_sort();
+		$off_by_one_count = 0;
+		$temp_hand = array();
+		for( $i=0; $i< count($abs_array) ; $i++)
 		{
-			$diff = $abs_array[$i]-$abs_array[$i-1];
-			if($diff > 1)
+			$next = $i+1;
+			$diff = $abs_array[$next]->get_abs_value - $abs_array[$i]->get_abs_value() ;
+			if($dff == 1)
 			{
-				$ls_check = false;
-				break;
+				$off_by_one_count += 1;
+				$temp_hand[] = $abs_array[$i];
 			}
 		}
-		reset($abs_array);
-		$start = count($abs_array)-1;
-		for($k=$start; $k > 0 ; $k--)
+		if($off_by_one_count > 4 && count($temp_hand) >= 5)
 		{
-			$diff = $abs_array[$k]-$abs_array[$k-1];
-			if($diff > 1)
-			{
-				$hs_check= false;
-				break;
-			}
-		}
-
-		if(($ls_check==true) || ($hs_check == true))
-		{
+			$this->winning_hand = $temp_hand;
+			$this->win_string = 'STRAIGHT';
 			return true;
 		}
 		return false;
 	}
-	private function get_abs_sort(array $community)
+	private function get_abs_sort()
 	{
 		$abs_array = array();
-		foreach($this->hand as $card)
-		{
-			$abs_array[] = $card->get_abs_value();
-			if($card->get_abs_value()==14)
-			{
-				$abs_array[]=1; 
-			}
+		if($abs_array < 5){
+			return false;
 		}
-		foreach($community as $card)
+		foreach($this->combined_hand as $card)
 		{
 			$abs_array[] = $card->get_abs_value();
 			if($card->get_abs_value()==14)
 			{
-				$abs_array[]=1; 
-			}	
+				$abs_array[]=1;
+			}
 		}
 		$abs_array =array_unique($abs_array);
 		sort($abs_array);
 		return $abs_array;
 	}
-	public function check_straight_flush(array $community)
+	public function check_straight_flush()
 	{
-		if(($this->check_straight($community) == true )&& ($this->check_flush($community) == true))
+		if(($this->check_straight() == true )&& ($this->check_flush() == true))
 		{
 			return true;
 		}
 		return false;
 	}
-	public function check_royal_flush(array $community)
+	public function check_royal_flush()
 	{
-		$abs_array = $this->get_abs_sort($community);
+		$abs_array = $this->get_abs_sort();
 		if((end($abs_array) == 14) && $this->check_straight_flush($community))
 		{
 			return true;
 		}
 		return false;
 	}
+	public function init_combined_hand()
+	{
+		$this->combined_hand = array_merge($this->hand, $this->community);
+	}
 	public function get_high_hand(array $community)
 	{
-		if($this->check_royal_flush($community) == true)
+		$this->set_community($community);
+		
+		if($this->check_royal_flush() == true)
 		{
-			return 100;
+			$this->score =  1000;
 		}
-		if($this->check_straight_flush($community) == true)
+		if($this->check_straight_flush() == true)
 		{
-			return 99;
+			$this->score = 9999;
 		}
-		if($this->check_four($community) == true)
+		if($this->check_four() == true)
 		{
-			return 98;
+			$this->score = 9800;
 		}
-		if($this->check_full_house($community) == true)
+		if($this->check_full_house() == true)
 		{
-			return 97;
+			$this->score = 97;
 		}
-		if($this->check_straight($community) == true)
+		if($this->check_straight() == true)
 		{
-			return 96;
+			$this->score = 96 ;
 		}
-		if($this->check_2pairs($community) == true)
-		{
-			return 95;
-		}
-		if($this->check_2pairs($community) == true)
-		{
-			return 94;
-		}
-		if(count($this->check_match) >0 )
-		{
-			return 93;
-		}
-		$abs_array=$this->get_abs_sort($community);
-		return end($abs_array);
+
+		$abs_array=$this->get_abs_sort();
+		$this->score =  end($abs_array);
 	}
 	public function display_cards()
 	{
-		foreach($this->hand as $card)
+		foreach($this->winning_hand as $card)
 		{
 			echo $card."\n";
 		}

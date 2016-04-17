@@ -1,0 +1,11 @@
+Read me . 
+this is unfinished work .  I am trying to write a texas hold em game in cli. It is really buggy right now.
+
+started doing:
+1) create functional tests for different winning hands
+
+need to do
+
+1) generate winnnig hands properly.
+
+2) display hands in nice format.
